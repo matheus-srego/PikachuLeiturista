@@ -1,19 +1,15 @@
-# import os.path
-from DataPrep.data_processing import DataProcessing
+from DataPrep.data_preprocessing import DataPreprocessing
 
-class Miau:
+class MiauInitalizer:
     
     def __init__( self ):
-        print( 'Inicializando MIAU' )
+        print( 'Inicializando M.I.A.U.' )
 
     def main( self ):
-        DataProcessing.start_formatting_CSV( self )
+        DataPreprocessing.start_formatting_CSV( self )
         
 if __name__ == '__main__':
-    miau = Miau()
+    miau = MiauInitalizer()
     miau.main()
-        # if( os.path.exists( '~/miau/Data/Processed/home.csv' ) ):
-            # print( 'Não há necessidade de limpar o CSV, o mesmo já está gerado!' )
-        # else:
     
     
