@@ -1,7 +1,7 @@
 # PATHS -------------------------------------------
-URL_CSV = 'https://drive.google.com/file/d/1if6xBaxKSaWAd5kvXT5SnppB1EvQTGO1/view?usp=sharing'
-RAW_CSV = '~/M.I.A.U./miau/Data/Raw/HomeC.csv'
-PROCESSED_CSV = '~/M.I.A.U./miau/Data/Processed/home.csv'
+URL_CSV = ''
+PATH_RAW_CSV = '~/M.I.A.U/miau/Data/Raw/HomeC.csv'
+PATH_PROCESSED_CSV = '~/M.I.A.U/miau/Data/Processed/home.csv'
 # -------------------------------------------------
 
 # FORMATS -----------------------------------------
