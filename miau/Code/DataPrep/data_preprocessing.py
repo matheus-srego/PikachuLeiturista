@@ -1,18 +1,22 @@
 import pandas as pd
 import time
+import os
 
+from DataPrep.download import Download
 import Shared.CONSTANTS as CONSTANTS
 
 class DataPreprocessing( object ):
     
-    def __init__( self, RAW_CSV, PROCESSED_CSV ):
-        self.RAW_CSV = RAW_CSV
-        self.PROCESSED_CSV = PROCESSED_CSV
+    def __init__( self ):
         self.CONSTANTS = CONSTANTS
+        self.PATH_RAW_CSV = CONSTANTS.PATH_RAW_CSV
+        self.PATH_PROCESSED_CSV = CONSTANTS.PATH_PROCESSED_CSV
         
     # 1
     def read_csv( self, csv ):
         dataframe = pd.read_csv( csv )
+
+        print( dataframe )
         
         return dataframe
         
@@ -20,6 +24,7 @@ class DataPreprocessing( object ):
     def processing( self, dataframe ):
         # Criando índice temporal dos dados..
         format_date = self.CONSTANTS.FORMAT_DATE_EUA
+
         initial_date = time.strftime( format_date, time.localtime( int( dataframe.loc[0, self.CONSTANTS.COLUMN_TIME] ) ) )
         index = pd.date_range( initial_date, periods=len( dataframe ), freq='min' )
         
@@ -89,15 +94,26 @@ class DataPreprocessing( object ):
         
     # 5
     def create_csv( self, dataframe ):
-        dataframe.to_csv( self.NEW_CSV, index=True, header=True )
+        dataframe.to_csv( self.CONSTANTS.PATH_PROCESSED_CSV, index=True, header=True )
+
+    def hasFileOrNeedDownload( self ):
+        if( os.path.exists( self.CONSTANTS.PATH_RAW_CSV ) == False and os.path.exists( self.CONSTANTS.PATH_PROCESSED_CSV ) == False ):
+            Download.csv( self.CONSTANTS.URL_CSV, self.CONSTANTS.PATH_RAW_CSV )
+            return True
+        return False
         
     def start_formatting_CSV( self ):
         DataPreprocessing.__init__( self )
-        
-        dataframe = DataPreprocessing.read_csv( self, self.CONSTANTS.RAW_CSV )
+
+        # needProcess = DataPreprocessing.hasFileOrNeedDownload( self )
+
+        # if( needProcess == True ):
+        dataframe = DataPreprocessing.read_csv( self, self.CONSTANTS.PATH_RAW_CSV )
         dataframe = DataPreprocessing.processing( self, dataframe )
         dataframe = DataPreprocessing.create_new_columns( self, dataframe )
         dataframe = DataPreprocessing.remove_columns( self, dataframe )
+
+        print( dataframe )
 
         DataPreprocessing.create_csv( self, dataframe )
         
