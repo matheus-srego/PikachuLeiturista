@@ -10,6 +10,12 @@
 
 
 ## Índice
+ - [Objetivo](https://github.com/matheus-srego/PikachuLeiturista/blob/main/README.md#objetivo)
+ - [Arquitetura do Projeto](https://github.com/matheus-srego/PikachuLeiturista/blob/main/README.md#arquitetura-do-projeto)
+ - [Stack](https://github.com/matheus-srego/PikachuLeiturista/blob/main/README.md#stack)
+ - [Descrição](https://github.com/matheus-srego/PikachuLeiturista/blob/main/README.md#descri%C3%A7%C3%A3o)
+ - [Como executar o projeto](https://github.com/matheus-srego/PikachuLeiturista/blob/main/README.md#como-executar-o-projeto)
+ - [Licença](https://github.com/matheus-srego/PikachuLeiturista/blob/main/README.md#licen%C3%A7a)
 
 ## Objetivo
 
