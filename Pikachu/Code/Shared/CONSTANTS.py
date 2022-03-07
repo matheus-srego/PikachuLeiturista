@@ -1,7 +1,7 @@
 # PATHS -------------------------------------------
 URL_CSV = ''
-PATH_RAW_CSV = '~/M.I.A.U/miau/Data/Raw/HomeC.csv'
-PATH_PROCESSED_CSV = '~/M.I.A.U/miau/Data/Processed/home.csv'
+PATH_RAW_CSV = '~/M.I.A.U/Pikachu/Data/Raw/HomeC.csv'
+PATH_PROCESSED_CSV = '~/M.I.A.U/Pikachu/Data/Processed/home.csv'
 # -------------------------------------------------
 
 # FORMATS -----------------------------------------

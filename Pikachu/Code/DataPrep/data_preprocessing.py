@@ -2,7 +2,7 @@ import pandas as pd
 import time
 import os
 
-from DataPrep.download import Download
+# from DataPrep.download import Download
 import Shared.CONSTANTS as CONSTANTS
 
 class DataPreprocessing( object ):
@@ -96,11 +96,11 @@ class DataPreprocessing( object ):
     def create_csv( self, dataframe ):
         dataframe.to_csv( self.CONSTANTS.PATH_PROCESSED_CSV, index=True, header=True )
 
-    def hasFileOrNeedDownload( self ):
-        if( os.path.exists( self.CONSTANTS.PATH_RAW_CSV ) == False and os.path.exists( self.CONSTANTS.PATH_PROCESSED_CSV ) == False ):
-            Download.csv( self.CONSTANTS.URL_CSV, self.CONSTANTS.PATH_RAW_CSV )
-            return True
-        return False
+    # def hasFileOrNeedDownload( self ):
+    #     if( os.path.exists( self.CONSTANTS.PATH_RAW_CSV ) == False and os.path.exists( self.CONSTANTS.PATH_PROCESSED_CSV ) == False ):
+    #         Download.csv( self.CONSTANTS.URL_CSV, self.CONSTANTS.PATH_RAW_CSV )
+    #         return True
+    #     return False
         
     def start_formatting_CSV( self ):
         DataPreprocessing.__init__( self )
@@ -108,7 +108,8 @@ class DataPreprocessing( object ):
         # needProcess = DataPreprocessing.hasFileOrNeedDownload( self )
 
         # if( needProcess == True ):
-        dataframe = DataPreprocessing.read_csv( self, self.CONSTANTS.PATH_RAW_CSV )
+        path_raw_csv = self.CONSTANTS.PATH_RAW_CSV
+        dataframe = DataPreprocessing.read_csv( self, path_raw_csv )
         dataframe = DataPreprocessing.processing( self, dataframe )
         dataframe = DataPreprocessing.create_new_columns( self, dataframe )
         dataframe = DataPreprocessing.remove_columns( self, dataframe )
