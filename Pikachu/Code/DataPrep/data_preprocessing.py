@@ -95,7 +95,8 @@ class DataPreprocessing( object ):
     # 5
     def create_csv( self, dataframe ):
         dataframe.to_csv( self.CONSTANTS.PATH_PROCESSED_CSV, index=True, header=True )
-
+    
+    # 0
     # def hasFileOrNeedDownload( self ):
     #     if( os.path.exists( self.CONSTANTS.PATH_RAW_CSV ) == False and os.path.exists( self.CONSTANTS.PATH_PROCESSED_CSV ) == False ):
     #         Download.csv( self.CONSTANTS.URL_CSV, self.CONSTANTS.PATH_RAW_CSV )
