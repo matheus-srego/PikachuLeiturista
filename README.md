@@ -21,7 +21,7 @@
 
 > *“Implementar um sistema de predição baseado em dados obtidos a partir de sensores de dispositivos IoT conectados à nuvem, documentando a solução e explicando a modelagem utilizada.”*
 
-Utilizando tecnologias AWS, Python 3, análise e predição de dados, o projeto de Bloco em IoT e Data Science denominado Pikachu realiza a coleta, predição e avisos sobre o uso de energia doméstica. Desta forma, o projeto tem como finalidade auxiliar o usuário em uma utilização e controle conscientes da energia de sua residência.
+Utilizando tecnologias AWS, Python 3, análise e predição de dados, o projeto de Bloco em IoT e Data Science denominado Pikachu Leiturista realiza a coleta, predição e avisos sobre o uso de energia doméstica. Desta forma, o projeto tem como finalidade auxiliar o usuário em uma utilização e controle conscientes da energia de sua residência.
 
 ## Arquitetura do Projeto
 
