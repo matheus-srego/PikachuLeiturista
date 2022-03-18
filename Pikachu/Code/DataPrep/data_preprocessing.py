@@ -14,9 +14,7 @@ class DataPreprocessing( object ):
         
     # 1
     def read_csv( self, csv ):
-        dataframe = pd.read_csv( csv )
-
-        print( dataframe )
+        dataframe = pd.read_csv( csv, low_memory=False )
         
         return dataframe
         
@@ -111,11 +109,11 @@ class DataPreprocessing( object ):
         # if( needProcess == True ):
         path_raw_csv = self.CONSTANTS.PATH_RAW_CSV
         dataframe = DataPreprocessing.read_csv( self, path_raw_csv )
-        dataframe = DataPreprocessing.processing( self, dataframe )
-        dataframe = DataPreprocessing.create_new_columns( self, dataframe )
-        dataframe = DataPreprocessing.remove_columns( self, dataframe )
+        # dataframe = DataPreprocessing.processing( self, dataframe )
+        # dataframe = DataPreprocessing.create_new_columns( self, dataframe )
+        # dataframe = DataPreprocessing.remove_columns( self, dataframe )
 
         print( dataframe )
 
-        DataPreprocessing.create_csv( self, dataframe )
+        # DataPreprocessing.create_csv( self, dataframe )
         
