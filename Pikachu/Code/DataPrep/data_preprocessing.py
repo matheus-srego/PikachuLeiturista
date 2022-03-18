@@ -11,109 +11,97 @@ class DataPreprocessing( object ):
         self.CONSTANTS = CONSTANTS
         self.PATH_RAW_CSV = CONSTANTS.PATH_RAW_CSV
         self.PATH_PROCESSED_CSV = CONSTANTS.PATH_PROCESSED_CSV
-        
-    # 1
+    
     def read_csv( self, csv ):
         dataframe = pd.read_csv( csv, low_memory=False )
         
         return dataframe
-        
-    # 2
-    def processing( self, dataframe ):
-        # Criando índice temporal dos dados..
-        format_date = self.CONSTANTS.FORMAT_DATE_EUA
-
-        initial_date = time.strftime( format_date, time.localtime( int( dataframe.loc[0, self.CONSTANTS.COLUMN_TIME] ) ) )
-        index = pd.date_range( initial_date, periods=len( dataframe ), freq='min' )
-        
-        dataframe = dataframe.set_index( pd.DatetimeIndex( index ) )
-        
-        return dataframe
-
-    # 3
-    def create_new_columns( self, dataframe ):
-        # Mudando nome das colunas..
-        dataframe[self.CONSTANTS.APPARENT_TEMPERATURE] = dataframe[self.CONSTANTS.COLUMN_APPARENT_TEMPERATURE]
-        dataframe[self.CONSTANTS.KW_USE] = dataframe[self.CONSTANTS.COLUMN_USE]
-        dataframe[self.CONSTANTS.KW_GENERATION] = dataframe[self.CONSTANTS.COLUMN_GEN]
-        dataframe[self.CONSTANTS.KW_HOUSE] = dataframe[self.CONSTANTS.COLUMN_HOUSE_OVERALL]
-        dataframe[self.CONSTANTS.KW_HOME_OFFICE] = dataframe[self.CONSTANTS.COLUMN_HOME_OFFICE]
-        dataframe[self.CONSTANTS.KW_LIVING_ROOM] = dataframe[self.CONSTANTS.COLUMN_LIVING_ROOM]
-        dataframe[self.CONSTANTS.KW_KITCHEN] = dataframe[self.CONSTANTS.COLUMN_KITCHEN_12] + dataframe[self.CONSTANTS.COLUMN_KITCHEN_14] + dataframe[self.CONSTANTS.COLUMN_KITCHEN_38]
-        dataframe[self.CONSTANTS.KW_WINE_CELLAR] = dataframe[self.CONSTANTS.COLUMN_WINE_CELLAR]
-        dataframe[self.CONSTANTS.KW_GARAGE_DOOR] = dataframe[self.CONSTANTS.COLUMN_GARAGE_DOOR]
-        dataframe[self.CONSTANTS.KW_BARN] = dataframe[self.CONSTANTS.COLUMN_BARN]
-
-        return dataframe
-
-    # 4
-    def remove_columns( self, dataframe ):
-        dataframe = dataframe.dropna()
-        
-        # Removendo colunas que não serão utilizadas..
-        del dataframe[self.CONSTANTS.COLUMNS_SOLAR]
-        del dataframe[self.CONSTANTS.COLUMN_ICON]
-        del dataframe[self.CONSTANTS.COLUMN_HUMIDITY]
-        del dataframe[self.CONSTANTS.COLUMN_VISIBILITY]
-        del dataframe[self.CONSTANTS.COLUMN_SUMARY]
-        del dataframe[self.CONSTANTS.COLUMN_PRESSURE]
-        del dataframe[self.CONSTANTS.COLUMN_WIND_SPEED]
-        del dataframe[self.CONSTANTS.COLUMN_CLOUD_COVER]
-        del dataframe[self.CONSTANTS.COLUMN_WIND_BEARING]
-        del dataframe[self.CONSTANTS.COLUMN_PRECIP_INTENSITY]
-        del dataframe[self.CONSTANTS.COLUMN_DEW_POINT]
-        del dataframe[self.CONSTANTS.COLUMN_PRECIP_PROBABILITY]
-        
-        # Removendo colunas de eletrodomésticos..
-        del dataframe[self.CONSTANTS.COLUMN_DISHWASHER]
-        del dataframe[self.CONSTANTS.COLUMN_FURNACE_1]
-        del dataframe[self.CONSTANTS.COLUMN_FURNACE_2]
-        del dataframe[self.CONSTANTS.COLUMN_FRIDGE]
-        del dataframe[self.CONSTANTS.COLUMN_WELL]
-        del dataframe[self.CONSTANTS.COLUMN_MICROWAVE]
-        
-        # Deletando colunas com nomes antigos..
-        del dataframe[self.CONSTANTS.COLUMN_APPARENT_TEMPERATURE]
-        del dataframe[self.CONSTANTS.COLUMN_USE]
-        del dataframe[self.CONSTANTS.COLUMN_GEN]
-        del dataframe[self.CONSTANTS.COLUMN_HOUSE_OVERALL]
-        del dataframe[self.CONSTANTS.COLUMN_HOME_OFFICE]
-        del dataframe[self.CONSTANTS.COLUMN_LIVING_ROOM]
-        del dataframe[self.CONSTANTS.COLUMN_KITCHEN_12]
-        del dataframe[self.CONSTANTS.COLUMN_KITCHEN_14]
-        del dataframe[self.CONSTANTS.COLUMN_KITCHEN_38]
-        del dataframe[self.CONSTANTS.COLUMN_WINE_CELLAR]
-        del dataframe[self.CONSTANTS.COLUMN_GARAGE_DOOR]
-        del dataframe[self.CONSTANTS.COLUMN_BARN]
-
-        del dataframe[self.CONSTANTS.COLUMN_TIME]
-        
-        return dataframe
-        
-    # 5
+    
     def create_csv( self, dataframe ):
         dataframe.to_csv( self.CONSTANTS.PATH_PROCESSED_CSV, index=True, header=True )
     
-    # 0
-    # def hasFileOrNeedDownload( self ):
-    #     if( os.path.exists( self.CONSTANTS.PATH_RAW_CSV ) == False and os.path.exists( self.CONSTANTS.PATH_PROCESSED_CSV ) == False ):
-    #         Download.csv( self.CONSTANTS.URL_CSV, self.CONSTANTS.PATH_RAW_CSV )
-    #         return True
-    #     return False
+    def processing( self, dataframe ):
+        # Somando consumo de energia de todas as cozinhas..
+        dataframe['KW_kitchen'] = dataframe['Kitchen 12 [kW]'] + dataframe['Kitchen 14 [kW]'] + dataframe['Kitchen 38 [kW]']
+        
+        # Criando índice temporal dos dados..
+        format_date = '%Y-%m-%d %H:%M:%S'
+        
+        initial_date = time.strftime( format_date, time.localtime( int( dataframe.loc[0, 'time'] ) ) )
+        index = pd.date_range( initial_date, periods=len( dataframe ), freq='min' )
+        dataframe = dataframe.set_index( pd.DatetimeIndex( data=index, name='datetime' ) )
+        
+        return dataframe
+    
+    def rename_columms( self, dataframe ):
+        dataframe.rename( columns={
+              'temperature': 'C_temperature',
+              'use [kW]': 'KW_use',
+              'Home office [kW]': 'KW_home_office',
+              'Living room [kW]': 'KW_living_room',
+              'Wine cellar [kW]': 'KW_wine_cellar',
+              'Garage door [kW]': 'KW_garage_door',
+              'Barn [kW]': 'KW_barn'
+            }, 
+            inplace=True 
+        )
+        
+        return dataframe
+    
+    def clean_dataframe( self, dataframe ):
+        # Removendo Nan e Null..
+        dataframe = dataframe.dropna()
+        
+        # Removendo colunas que não serão utilizadas..
+        del dataframe['time']
+        del dataframe['House overall [kW]']
+        del dataframe['apparentTemperature']
+        del dataframe['Solar [kW]']
+        del dataframe['icon']
+        del dataframe['humidity']
+        del dataframe['visibility']
+        del dataframe['summary']
+        del dataframe['pressure']
+        del dataframe['windSpeed']
+        del dataframe['cloudCover']
+        del dataframe['windBearing']
+        del dataframe['precipIntensity']
+        del dataframe['dewPoint']
+        del dataframe['precipProbability']
+        
+        # Removendo colunas de eletrodomésticos..
+        del dataframe['gen [kW]']
+        del dataframe['Dishwasher [kW]']
+        del dataframe['Furnace 1 [kW]']
+        del dataframe['Furnace 2 [kW]']
+        del dataframe['Fridge [kW]']
+        del dataframe['Well [kW]']
+        del dataframe['Microwave [kW]']
+        
+        # Deletando colunas com nomes antigos..
+        del dataframe['Kitchen 12 [kW]']
+        del dataframe['Kitchen 14 [kW]']
+        del dataframe['Kitchen 38 [kW]']
+        
+        return dataframe
+    
+    def organizing_dataframe( self, dataframe ):
+        # Reposicionando colunas..
+        dataframe = dataframe[['C_temperature', 'KW_use', 'KW_kitchen', 'KW_living_room', 'KW_home_office', 'KW_wine_cellar', 'KW_barn', 'KW_garage_door']]
+        
+        return dataframe
         
     def start_formatting_CSV( self ):
         DataPreprocessing.__init__( self )
-
-        # needProcess = DataPreprocessing.hasFileOrNeedDownload( self )
-
-        # if( needProcess == True ):
+        
         path_raw_csv = self.CONSTANTS.PATH_RAW_CSV
         dataframe = DataPreprocessing.read_csv( self, path_raw_csv )
-        # dataframe = DataPreprocessing.processing( self, dataframe )
-        # dataframe = DataPreprocessing.create_new_columns( self, dataframe )
-        # dataframe = DataPreprocessing.remove_columns( self, dataframe )
-
+        dataframe = DataPreprocessing.rename_columms( self, dataframe )
+        dataframe = DataPreprocessing.processing( self, dataframe )
+        dataframe = DataPreprocessing.clean_dataframe( self, dataframe )
+        dataframe = DataPreprocessing.organizing_dataframe( self, dataframe )
+        
         print( dataframe )
 
-        # DataPreprocessing.create_csv( self, dataframe )
+        DataPreprocessing.create_csv( self, dataframe )
         

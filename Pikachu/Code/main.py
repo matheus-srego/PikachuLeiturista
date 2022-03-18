@@ -12,4 +12,3 @@ if __name__ == '__main__':
     miau = PikachuInitalizer()
     miau.main()
     
-    
