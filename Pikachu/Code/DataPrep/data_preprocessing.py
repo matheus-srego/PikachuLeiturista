@@ -21,32 +21,33 @@ class DataPreprocessing( object ):
         dataframe.to_csv( self.CONSTANTS.PATH_PROCESSED_CSV, index=True, header=True )
     
     def processing( self, dataframe ):
-        # Somando consumo de energia de todas as cozinhas..
-        dataframe['KW_kitchen'] = dataframe['Kitchen 12 [kW]'] + dataframe['Kitchen 14 [kW]'] + dataframe['Kitchen 38 [kW]']
-        
-        # Criando índice temporal dos dados..
-        format_date = '%Y-%m-%d %H:%M:%S'
-        
-        initial_date = time.strftime( format_date, time.localtime( int( dataframe.loc[0, 'time'] ) ) )
+        # Criando índice temporal dos dados..=
+        initial_date = time.strftime( CONSTANTS.FORMAT_DATE_EUA, time.localtime( int( dataframe.loc[0, CONSTANTS.COLUMN_TIME] ) ) )
         index = pd.date_range( initial_date, periods=len( dataframe ), freq='min' )
         
-        # Criando índice temporal e agrupando por dia..
-        dataframe = dataframe.set_index( pd.DatetimeIndex( data=index, name='datetime' ) ).groupby( pd.Grouper( freq='D' ) ).mean()
+        # Criando índice temporal e agrupando linhas por dia..
+        dataframe = dataframe.set_index( pd.DatetimeIndex( data=index, name=CONSTANTS.INDEX_DATETIME ) ).groupby( pd.Grouper( freq='D' ) ).mean()
         
         return dataframe
     
     def rename_columms( self, dataframe ):
-        dataframe.rename( columns={
-              'temperature': 'C_temperature',
-              'use [kW]': 'KW_use',
-              'Home office [kW]': 'KW_home_office',
-              'Living room [kW]': 'KW_living_room',
-              'Wine cellar [kW]': 'KW_wine_cellar',
-              'Garage door [kW]': 'KW_garage_door',
-              'Barn [kW]': 'KW_barn'
+        # Somando consumo de energia de todas as cozinhas..
+        dataframe[CONSTANTS.KW_KITCHEN] = dataframe[CONSTANTS.COLUMN_KITCHEN_12] + dataframe[CONSTANTS.COLUMN_KITCHEN_14] + dataframe[CONSTANTS.COLUMN_KITCHEN_38]
+        
+        dataframe.rename( 
+            columns = {
+                CONSTANTS.COLUMN_TEMPERATURE: CONSTANTS.C_TEMPERATURE,
+                CONSTANTS.COLUMN_USE: CONSTANTS.KW_USE,
+                CONSTANTS.COLUMN_HOME_OFFICE: CONSTANTS.KW_HOME_OFFICE,
+                CONSTANTS.COLUMN_LIVING_ROOM: CONSTANTS.KW_LIVING_ROOM,
+                CONSTANTS.COLUMN_WINE_CELLAR: CONSTANTS.KW_WINE_CELLAR,
+                CONSTANTS.COLUMN_GARAGE_DOOR: CONSTANTS.KW_GARAGE_DOOR,
+                CONSTANTS.COLUMN_BARN: CONSTANTS.KW_BARN
             }, 
             inplace=True 
         )
+        
+        print( dataframe )
         
         return dataframe
     
@@ -54,42 +55,33 @@ class DataPreprocessing( object ):
         # Removendo Nan e Null..
         dataframe = dataframe.dropna()
         
-        # Removendo colunas que não serão utilizadas..
-        # del dataframe['time']
-        del dataframe['House overall [kW]']
-        del dataframe['apparentTemperature']
-        del dataframe['Solar [kW]']
-        # del dataframe['icon']
-        del dataframe['humidity']
-        del dataframe['visibility']
-        # del dataframe['summary']
-        del dataframe['pressure']
-        del dataframe['windSpeed']
-        # del dataframe['cloudCover']
-        del dataframe['windBearing']
-        del dataframe['precipIntensity']
-        del dataframe['dewPoint']
-        del dataframe['precipProbability']
-        
-        # Removendo colunas de eletrodomésticos..
-        del dataframe['gen [kW]']
-        del dataframe['Dishwasher [kW]']
-        del dataframe['Furnace 1 [kW]']
-        del dataframe['Furnace 2 [kW]']
-        del dataframe['Fridge [kW]']
-        del dataframe['Well [kW]']
-        del dataframe['Microwave [kW]']
-        
-        # Deletando colunas com nomes antigos..
-        del dataframe['Kitchen 12 [kW]']
-        del dataframe['Kitchen 14 [kW]']
-        del dataframe['Kitchen 38 [kW]']
+        del dataframe[CONSTANTS.COLUMN_HOUSE_OVERALL]
+        del dataframe[CONSTANTS.COLUMN_APPARENT_TEMPERATURE]
+        del dataframe[CONSTANTS.COLUMN_SOLAR]
+        del dataframe[CONSTANTS.COLUMN_HUMIDITY]
+        del dataframe[CONSTANTS.COLUMN_VISIBILITY]
+        del dataframe[CONSTANTS.COLUMN_PRESSURE]
+        del dataframe[CONSTANTS.COLUMN_WIND_SPEED]
+        del dataframe[CONSTANTS.COLUMN_WIND_BEARING]
+        del dataframe[CONSTANTS.COLUMN_PRECIP_INTENSITY]
+        del dataframe[CONSTANTS.COLUMN_DEW_POINT]
+        del dataframe[CONSTANTS.COLUMN_PRECIP_PROBABILITY]
+        del dataframe[CONSTANTS.COLUMN_GEN]
+        del dataframe[CONSTANTS.COLUMN_DISHWASHER]
+        del dataframe[CONSTANTS.COLUMN_FURNACE_1]
+        del dataframe[CONSTANTS.COLUMN_FURNACE_2]
+        del dataframe[CONSTANTS.COLUMN_FRIDGE]
+        del dataframe[CONSTANTS.COLUMN_WELL]
+        del dataframe[CONSTANTS.COLUMN_MICROWAVE]
+        del dataframe[CONSTANTS.COLUMN_KITCHEN_12]
+        del dataframe[CONSTANTS.COLUMN_KITCHEN_14]
+        del dataframe[CONSTANTS.COLUMN_KITCHEN_38]
         
         return dataframe
     
     def organizing_dataframe( self, dataframe ):
         # Reposicionando colunas..
-        dataframe = dataframe[['C_temperature', 'KW_use', 'KW_kitchen', 'KW_living_room', 'KW_home_office', 'KW_wine_cellar', 'KW_barn', 'KW_garage_door']]
+        dataframe = dataframe[['dataframe','C_temperature', 'KW_use', 'KW_kitchen', 'KW_living_room', 'KW_home_office', 'KW_wine_cellar', 'KW_barn', 'KW_garage_door']]
         
         return dataframe
         
@@ -97,11 +89,12 @@ class DataPreprocessing( object ):
         DataPreprocessing.__init__( self )
         
         path_raw_csv = self.CONSTANTS.PATH_RAW_CSV
+        
         dataframe = DataPreprocessing.read_csv( self, path_raw_csv )
         dataframe = DataPreprocessing.rename_columms( self, dataframe )
         dataframe = DataPreprocessing.processing( self, dataframe )
         dataframe = DataPreprocessing.clean_dataframe( self, dataframe )
-        dataframe = DataPreprocessing.organizing_dataframe( self, dataframe )
+        # dataframe = DataPreprocessing.organizing_dataframe( self, dataframe )
         
         print( dataframe )
 
