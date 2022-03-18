@@ -29,7 +29,9 @@ class DataPreprocessing( object ):
         
         initial_date = time.strftime( format_date, time.localtime( int( dataframe.loc[0, 'time'] ) ) )
         index = pd.date_range( initial_date, periods=len( dataframe ), freq='min' )
-        dataframe = dataframe.set_index( pd.DatetimeIndex( data=index, name='datetime' ) )
+        
+        # Criando índice temporal e agrupando por dia..
+        dataframe = dataframe.set_index( pd.DatetimeIndex( data=index, name='datetime' ) ).groupby( pd.Grouper( freq='D' ) ).mean()
         
         return dataframe
     
@@ -53,17 +55,17 @@ class DataPreprocessing( object ):
         dataframe = dataframe.dropna()
         
         # Removendo colunas que não serão utilizadas..
-        del dataframe['time']
+        # del dataframe['time']
         del dataframe['House overall [kW]']
         del dataframe['apparentTemperature']
         del dataframe['Solar [kW]']
-        del dataframe['icon']
+        # del dataframe['icon']
         del dataframe['humidity']
         del dataframe['visibility']
-        del dataframe['summary']
+        # del dataframe['summary']
         del dataframe['pressure']
         del dataframe['windSpeed']
-        del dataframe['cloudCover']
+        # del dataframe['cloudCover']
         del dataframe['windBearing']
         del dataframe['precipIntensity']
         del dataframe['dewPoint']
