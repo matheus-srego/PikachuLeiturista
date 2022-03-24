@@ -1,6 +1,6 @@
 # PATHS -------------------------------------------
-PATH_RAW_CSV = '~/environment/PikachuLeiturista/Pikachu/Data/Raw/HomeC.csv'
-PATH_PROCESSED_CSV = '~/environment/PikachuLeiturista/Pikachu/Data/Processed/home.csv'
+PATH_RAW_CSV = '~/workspace/PikachuLeiturista/Pikachu/Data/Raw/HomeC.csv'
+PATH_PROCESSED_CSV = '~/workspace/PikachuLeiturista/Pikachu/Data/Processed/home.csv'
 # -------------------------------------------------
 
 # FORMATS -----------------------------------------

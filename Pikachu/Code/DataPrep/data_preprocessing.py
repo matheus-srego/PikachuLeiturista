@@ -21,7 +21,7 @@ class DataPreprocessing( object ):
         dataframe.to_csv( self.CONSTANTS.PATH_PROCESSED_CSV, index=True, header=True )
     
     def processing( self, dataframe ):
-        # Criando índice temporal dos dados..=
+        # Criando índice temporal dos dados..
         initial_date = time.strftime( CONSTANTS.FORMAT_DATE_EUA, time.localtime( int( dataframe.loc[0, CONSTANTS.COLUMN_TIME] ) ) )
         index = pd.date_range( initial_date, periods=len( dataframe ), freq='min' )
         
@@ -55,6 +55,7 @@ class DataPreprocessing( object ):
         # Removendo Nan e Null..
         dataframe = dataframe.dropna()
         
+        # Excluíndo colunas do dataframe..
         del dataframe[CONSTANTS.COLUMN_HOUSE_OVERALL]
         del dataframe[CONSTANTS.COLUMN_APPARENT_TEMPERATURE]
         del dataframe[CONSTANTS.COLUMN_SOLAR]
@@ -81,7 +82,7 @@ class DataPreprocessing( object ):
     
     def organizing_dataframe( self, dataframe ):
         # Reposicionando colunas..
-        dataframe = dataframe[['dataframe','C_temperature', 'KW_use', 'KW_kitchen', 'KW_living_room', 'KW_home_office', 'KW_wine_cellar', 'KW_barn', 'KW_garage_door']]
+        dataframe = dataframe[['C_temperature', 'KW_use', 'KW_kitchen', 'KW_living_room', 'KW_home_office', 'KW_wine_cellar', 'KW_barn', 'KW_garage_door']]
         
         return dataframe
         

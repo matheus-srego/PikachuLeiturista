@@ -9,6 +9,6 @@ class PikachuInitalizer:
         DataPreprocessing.start_formatting_CSV( self )
         
 if __name__ == '__main__':
-    miau = PikachuInitalizer()
-    miau.main()
+    initializer = PikachuInitalizer()
+    initializer.main()
     
