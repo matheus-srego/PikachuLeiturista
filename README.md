@@ -35,6 +35,9 @@ Utilizando tecnologias AWS, Python 3, análise e predição de dados, o projeto 
    - ```Numpy```
    - ```Matplotlib```
    - ```Seaborn```
+   - ```Prophet```
+   - ```Arima```
+   - ```scikit-learn```
  - ```AWS IoT Core```
  - ```AWS Cloud9```
 
